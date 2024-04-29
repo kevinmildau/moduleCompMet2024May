@@ -6,7 +6,7 @@ r_script_sourcepath = os.path.join("msfeast", "runStats.R")
 
 # Read the version string from version.py
 version = {}
-with open(os.path.join('modules', 'version.py')) as fp:
+with open(os.path.join('moduleCompMet2024May', 'version.py')) as fp:
   exec(fp.read(), version)
 
 setup(
