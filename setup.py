@@ -29,6 +29,9 @@ setup(
     'kmedoids==0.5.0',
     'spec2vec==0.8.0',
     'ms2deepscore==2.0.0',
+    'networkx',
+    'dash',
+    'dash-cytoscape'
   ],  
   extras_require={
     'dev': ['pytest']
