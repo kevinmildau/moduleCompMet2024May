@@ -8,12 +8,12 @@ import numpy as np
 from collections import namedtuple
 from functools import partial
 
-STYLESHEET = [
+STYLESHEET = [ # beware of the edge highlight creator styling!
     {
         'selector': 'node',
         'style': {
             'content': 'data(label)',
-            'opacity': 0.4,
+            'opacity': 0.6,
             'color' : 'orange',
             'visibility': 'visible',
             'background-color': 'gray',
@@ -24,20 +24,22 @@ STYLESHEET = [
         }
     },
     {
-        'selector': 'node:selected',
+        'selector': 'edge',
         'style': {
-            'visibility': 'visible',
-            'opacity': 0.9,
-            'background-color': 'magenta'
+            'label': 'data(label)',  # Show edge labels
+            'font-size': '12px',  # Customize font size
+            'text-opacity': 0.6,
+            'line-color': 'magenta',  # Highlighted edge color
+            'width': 'mapData(weight,0,1,1,10)',
+            'opacity': 'mapData(weight,0,1,0.2,0.8)',  # Highlighted edge opacity
         }
     },
     {
-        'selector': 'edge',
+        'selector': 'node:selected',
         'style': {
             'visibility': 'visible',
-            'opacity': 0.9,
-            'line-color': 'magenta',
-            'width' : '3px'
+            'background-opacity': 0.8,
+            'background-color': 'magenta',
         }
     }
 ]
@@ -47,8 +49,8 @@ def create_edge_highlight_entry(selected_node_id : Union[str, int]):
             'selector': f'edge[source="{selected_node_id}"], edge[target="{selected_node_id}"]',
             'style': {
                 'line-color': 'magenta',  # Highlighted edge color
-                'width': '3px',  # Highlighted edge width
-                'opacity': 0.9  # Highlighted edge opacity
+                'width': 'mapData(weight,0,1,1,10)',
+                'opacity': 'mapData(weight,0,1,0.2,0.8)',  # Highlighted edge opacity
             }
         }
     return entry
