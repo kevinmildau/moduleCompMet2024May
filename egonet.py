@@ -29,8 +29,6 @@ STYLESHEET = [ # beware of the edge highlight creator styling!
             'line-color': 'gray',
             'text-opacity': 0.4,
             'opacity' : 0.1,
-
-
         }
     },
     {
