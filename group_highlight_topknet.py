@@ -162,7 +162,6 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         State('cytoscape', 'zoom'),
     )
     def callback(selectedNodeData, init_elements, top_k, zoom):
-        print (zoom)
         return update_edges_local(selectedNodeData, init_elements, top_k), zoom
     
     @app.callback(
