@@ -122,7 +122,12 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
                 id='cytoscape',
                 elements = node_data,
                 stylesheet = STYLESHEET,
-                style={'width': '1200px', 'height': '800px'},
+                style={
+                    'width': '100%', 'height': '80vh',             
+                    'border': '2px solid gray',  # This adds the border
+                    'border-radius': '5px'  # Optional: for rounded corners
+                },
+                className='cytoscape-border',
                 boxSelectionEnabled=True,
                 zoom = 1,
                 layout = {
@@ -134,7 +139,8 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
             dcc.Store(id='edge_dict', data=copy.deepcopy(edge_dict)),
             dcc.Store(id='init_elemenents', data=copy.deepcopy(node_data)),
             dcc.Slider(min=1, max=max_k, step=1, value=5, id='top_k_slider')
-        ]
+        ], 
+        style = {'width' : '100%', 'height':'100vh'}
     )
     @app.callback(
         Output('selected-node-ids', 'children'),
@@ -161,8 +167,6 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         State('cytoscape', 'zoom'),
     )
     def callback(selectedNodeData, init_elements, top_k, zoom):
-        print (zoom)
         return update_edges_local(selectedNodeData, init_elements, top_k), zoom
 
-    app.run_server(debug=True)
     return app
