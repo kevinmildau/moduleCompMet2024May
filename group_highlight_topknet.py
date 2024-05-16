@@ -129,7 +129,7 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
                     'name' : 'preset', "fit": False,
                 }
             ),
-            html.Div(id='selected-node-ids'),
+            html.Div(id='selected-node-ids', style={'whiteSpace': 'pre-wrap'}),
             html.Div(id='hover-group-text'),
             dcc.Store(id='default_stylesheet', data= copy.deepcopy(STYLESHEET)),
             dcc.Store(id='edge_dict', data=copy.deepcopy(edge_dict)),
@@ -145,9 +145,9 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
     def update_selected_node_ids(selected_nodes, _):
         if selected_nodes:
             # Extract the node IDs from the selected nodes
-            selected_ids = [f"Feature {node['id']}"  for node in selected_nodes]
+            selected_data = [f"{str(node)}\n"  for node in selected_nodes]
             # Append the new selection to the existing text
-            updated_text = f"Selected Node IDs: {', '.join(selected_ids)}"
+            updated_text = f"Data for selected Nodes: \n  {'  '.join(selected_data)}"
             return updated_text
         else:
             return "No nodes selected"
@@ -161,7 +161,7 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         State('top_k_slider', 'value'),
         State('cytoscape', 'zoom'),
     )
-    def callback(selectedNodeData, init_elements, top_k, zoom):
+    def addEdgesToElements(selectedNodeData, init_elements, top_k, zoom):
         return update_edges_local(selectedNodeData, init_elements, top_k), zoom
     
     @app.callback(
@@ -170,7 +170,7 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         Input('cytoscape', 'mouseoverNodeData'),
         State('default_stylesheet', 'data'),
     )
-    def callback(mouseoverNodeData, default_stylesheet):
+    def provideNodeGroupHighlight(mouseoverNodeData, default_stylesheet):
         if mouseoverNodeData:
             highlight_group = create_group_highlight_entry(mouseoverNodeData["group"])
             hover_group_text = f"The hover highlighted group is: {mouseoverNodeData['group']}"
