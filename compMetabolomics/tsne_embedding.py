@@ -39,6 +39,18 @@ class GridEntryTsne:
       f"y coordinates = {', '.join(self.y_coordinates[0:4])}...")
     return custom_print
 
+def extract_coordinates_from_entry(tsne_grid_entry : GridEntryTsne) -> pd.DataFrame:
+  """ 
+  Function returns data frame with x and y coordinates for each feature based on GridEntryTsne object. 
+
+  Dev note: Feature ordering of rows follows that of the similarity matrix used to compute the tsne grid entry.
+  """
+  assert isinstance(tsne_grid_entry, GridEntryTsne), (
+    f"Error: Expected signle tsne grid entry object but received {type(tsne_grid_entry)}"
+  )
+  output = pd.DataFrame({'x_coordinate': tsne_grid_entry.x_coordinates, 'y_coordinate': tsne_grid_entry.y_coordinates})
+  return output
+
 def check_perplexities(perplexity_values : List[Union[float, int]], max_perplexity : Union[float, int]) -> None:
   """ Function checks whether perplexity values match expected configuration. Aborts if not. """
   assert perplexity_values is not [], (
@@ -134,3 +146,5 @@ def plot_selected_embedding(embedding_coordinates_table : pd.DataFrame) -> plotl
   )
   figure.show()
   return(figure)
+
+
