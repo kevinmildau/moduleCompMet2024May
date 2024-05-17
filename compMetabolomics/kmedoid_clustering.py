@@ -30,6 +30,9 @@ class GridEntryKmedoid:
             f"cluster_assignment = {', '.join(self.cluster_assignments[0:7])}...")
         return custom_print
 
+def get_kmedoid_grid_entry_cluster_assignments(kmedoid_grid : GridEntryKmedoid, iloc : int) -> List[int]:
+  """ Function returns kmedoid grid entry cluster assignments. """
+  return kmedoid_grid[iloc].cluster_assignments
 
 def run_kmedoid_grid(
     distance_matrix : np.ndarray, 
