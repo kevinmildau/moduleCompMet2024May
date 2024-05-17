@@ -6,14 +6,14 @@ r_script_sourcepath = os.path.join("msfeast", "runStats.R")
 
 # Read the version string from version.py
 version = {}
-with open(os.path.join('moduleCompMet2024May', 'version.py')) as fp:
+with open(os.path.join('compMetabolomics', 'version.py')) as fp:
   exec(fp.read(), version)
 
 setup(
-  name = 'moduleCompMet2024May',
+  name = 'compMetabolomics',
   version = version["__version__"],
   include_package_data = True, 
-  packages = ['moduleCompMet2024May'],
+  packages = ['compMetabolomics'],
   # scripts = ['someScriptPath.script'],
   python_requires = '>=3.10,<3.11',
   install_requires = [
