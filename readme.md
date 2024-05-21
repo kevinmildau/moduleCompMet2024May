@@ -1,4 +1,6 @@
-# Draft Practical Materials
+# Practical Materials
+
+This repository contains a small tutorial on mass spectral networking using GNPS and related tools.
 
 Clone the repo, and from the command line within the repo clone folder execute the following:
 
