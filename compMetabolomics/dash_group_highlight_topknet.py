@@ -176,7 +176,6 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         Input('cytoscape', 'selectedNodeData')
     )
     def update_spectrum_plots(selectedNodeData):
-        print("Reached Callback intro")
         max_n_spectra = 10
         if selectedNodeData:
             # ETL limiting to 5 spectra at most
