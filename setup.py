@@ -20,10 +20,10 @@ setup(
     'numpy', #'numpy==1.24.4',
     'jupyter', #'jupyter==1.0.0',
     'ipykernel', #"ipykernel==6.28.0",
-    'scikit-learn, '#'scikit-learn==1.4.0',
+    'scikit-learn', #'scikit-learn==1.4.0',
     'scipy', #'scipy==1.10.1',
-    'plotly',#'plotly==5.18.0',
-    'pandas',#'pandas==2.1.4',
+    'plotly', #'plotly==5.18.0',
+    'pandas', #'pandas==2.1.4',
     #'matchms==0.24.1', # required for data pre-processing only
     #"matchmsextras==0.4.0", # required for data pre-processing only
     'kmedoids==0.5.0',
