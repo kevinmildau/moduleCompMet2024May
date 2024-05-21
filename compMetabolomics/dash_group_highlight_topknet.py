@@ -7,6 +7,7 @@ from typing import List, Dict, Union
 import numpy as np
 from collections import namedtuple
 from functools import partial
+from compMetabolomics.spectrum import Spectrum, generate_single_spectrum_plot, generate_n_spectrum_plots, generate_mirror_plot
 
 STYLESHEET = [ # beware of the edge highlight creator styling!
     {
@@ -98,7 +99,7 @@ def update_edges(
         else:
             return init_elements
 
-def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], max_k : int):
+def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], max_k : int, spectra : List[Spectrum]):
     """ 
     Function runs dash_cytoscape based network visualization using provided network data. 
     
@@ -111,33 +112,50 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
       max_k : integer indicating the maximum number of edges supported by the slider.
     returns: app in run state.
     """
+    # named tuple Spectrum is not json serializable, and hence can't be used in dccStore
+    # It is defined here as a "global" variable within the scope of the run_network_visualization function for 
+    # accessibility within the update_spectrum_plots callback
+    _SPECTRA = copy.deepcopy(spectra) 
 
     edge_dict = generate_edge_dict(edge_data)
-
+    explainer_text = (
+        "--> Hover over a node to highlight it's k-medoid cluster.\n"
+        "--> Click on a node to see node information details, super-impose edges, and plot it's spectrum (below the main view).\n"
+        "--> Select multiple nodes via holding shift, ctrl, or cmd & selecting. This adds more edges, more spectrum plots, and more node information pieces.\n"
+        "--> Click on an empty space to de-select nodes.\n"
+        "--> Use the slider to adjust the number of edges shown for a clicked node (requires deselect and click to work).\n"
+    )
     # Initialize the app
     app = dash.Dash(__name__)
     # Define the layout
     app.layout = html.Div([
+            html.Details([
+                html.Summary('Interactive network visualization making use of a pre-computed t-SNE layout (expand for user manual).'),
+                html.Div([
+                    html.Div(id='explainer_text', style={'whiteSpace': 'pre-wrap'}, children=explainer_text),
+                ])
+            ]),
             cyto.Cytoscape(
                 id='cytoscape',
                 elements = node_data,
                 stylesheet = STYLESHEET,
-                style={'width': '1200px', 'height': '800px'},
+                style={'width': '1200px', 'height': '700px'},
                 boxSelectionEnabled=True,
                 zoom = 1,
                 layout = {
                     'name' : 'preset', "fit": False,
                 }
             ),
+            dcc.Slider(min=1, max=max_k, step=1, value=5, id='top_k_slider'),
             html.Div(id='selected-node-ids', style={'whiteSpace': 'pre-wrap'}),
             html.Div(id='hover-group-text'),
             html.Div(id='spectrum-plots'),
             dcc.Store(id='default_stylesheet', data= copy.deepcopy(STYLESHEET)),
             dcc.Store(id='edge_dict', data=copy.deepcopy(edge_dict)),
             dcc.Store(id='init_elemenents', data=copy.deepcopy(node_data)),
-            dcc.Slider(min=1, max=max_k, step=1, value=5, id='top_k_slider')
         ]
     )
+
     @app.callback(
         Output('selected-node-ids', 'children'),
         Input('cytoscape', 'selectedNodeData'),
