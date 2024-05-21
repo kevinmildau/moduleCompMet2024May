@@ -24,11 +24,11 @@ setup(
     'scipy==1.10.1',
     'plotly==5.18.0',
     'pandas==2.1.4',
-    'matchms==0.24.1',
-    "matchmsextras==0.4.0",
+    #'matchms==0.24.1', # required for data pre-processing only
+    #"matchmsextras==0.4.0", # required for data pre-processing only
     'kmedoids==0.5.0',
     'spec2vec==0.8.0',
-    'ms2deepscore==2.0.0',
+    #'ms2deepscore==2.0.0', # required for data pre-processing only
     'networkx',
     'dash',
     'dash-cytoscape'
