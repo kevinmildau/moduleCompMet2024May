@@ -1,7 +1,7 @@
 import json
 from collections import namedtuple
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import plotly.graph_objects as go
 
 PLOT_LAYOUT_SETTINGS = {
@@ -87,15 +87,18 @@ def generate_n_spectrum_plots(spectra : List[Spectrum]) -> List[go.Figure]:
     --------
         List of dcc.Graph objects; one spectrum plot per spectrum provided.
     """
+    min_x, max_x = get_min_max(spectra) 
     figure_list = []
     for spectrum in spectra:
-        spectrum_figure = generate_single_spectrum_plot(spectrum)
+        spectrum_figure = generate_single_spectrum_plot(spectrum, min_x, max_x)
         figure_list.append(spectrum_figure)
     return figure_list
 
 def generate_mirror_plot(top_spectrum : Spectrum, bottom_spectrum: Spectrum) -> go.Figure:
     """ Generates spectrum mirrorplot. """
-
+    min_x, max_x = get_min_max([top_spectrum, bottom_spectrum]) 
+    range_margin = 25
+    xticks = np.round(np.linspace(min_x - range_margin, max_x + range_margin, num=10, endpoint=True))
     top_hover_trace_invisible = generate_bar_hover_trace(
         top_spectrum.fragment_mass_to_charge_ratios, 
         top_spectrum.fragment_intensities, 
@@ -125,10 +128,26 @@ def generate_mirror_plot(top_spectrum : Spectrum, bottom_spectrum: Spectrum) -> 
         },
         **PLOT_LAYOUT_SETTINGS
     )
+    figure.update_xaxes(range = [min_x - range_margin, max_x + range_margin], tickvals= xticks.tolist())
     return figure
 
-def generate_single_spectrum_plot(spectrum : Spectrum) -> go.Figure:
+def generate_single_spectrum_plot(
+      spectrum : Spectrum, 
+      min_x : Union[float, None] = None, 
+      max_x : Union[float, None] = None
+      ) -> go.Figure:
     """ Generates single spectrum plot. """
+    # Handle min max setting
+    if max_x is None and min_x is None:
+        tmp_min, tmp_max = get_min_max([spectrum])
+    if max_x is None:
+       max_x = tmp_max
+    if min_x is None: 
+       min_x = tmp_min
+    
+    range_margin = 25
+    xticks = np.round(np.linspace(min_x - range_margin, max_x + range_margin, num=10, endpoint=True))
+    
     hover_trace_invisible = generate_bar_hover_trace(
         spectrum.fragment_mass_to_charge_ratios, 
         spectrum.fragment_intensities, 
@@ -142,6 +161,7 @@ def generate_single_spectrum_plot(spectrum : Spectrum) -> go.Figure:
         data = [hover_trace_invisible] + visual_trace
     )
     figure.update_yaxes(range=[0, 1])
+    figure.update_xaxes(range=[min_x - range_margin, max_x + range_margin], tickvals= xticks.tolist())
     figure.update_layout(
         title = {'text': f"Spectrum {spectrum.feature_id}"}, 
         **PLOT_LAYOUT_SETTINGS
