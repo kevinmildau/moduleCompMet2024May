@@ -131,6 +131,7 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
             ),
             html.Div(id='selected-node-ids', style={'whiteSpace': 'pre-wrap'}),
             html.Div(id='hover-group-text'),
+            html.Div(id='spectrum-plots'),
             dcc.Store(id='default_stylesheet', data= copy.deepcopy(STYLESHEET)),
             dcc.Store(id='edge_dict', data=copy.deepcopy(edge_dict)),
             dcc.Store(id='init_elemenents', data=copy.deepcopy(node_data)),
@@ -151,6 +152,34 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
             return updated_text
         else:
             return "No nodes selected"
+    
+    @app.callback(
+        Output('spectrum-plots', 'children'),
+        Input('cytoscape', 'selectedNodeData')
+    )
+    def update_spectrum_plots(selectedNodeData):
+        print("Reached Callback intro")
+        max_n_spectra = 10
+        if selectedNodeData:
+            # ETL limiting to 5 spectra at most
+            node_ids = [node['id'] for node in selectedNodeData]
+            plot_spectra = [spec for spec in _SPECTRA if spec.feature_id in node_ids[0:min(max_n_spectra, len(selectedNodeData))]]
+            if len(node_ids) == 1:
+                figure = generate_single_spectrum_plot(plot_spectra[0])
+                graph_object = dcc.Graph(id=f"specplot{1}", figure=figure)
+                return graph_object
+            elif len(node_ids) == 2:
+                figure = generate_mirror_plot(plot_spectra[0], plot_spectra[1])
+                graph_object = dcc.Graph(id=f"specplot{1}", figure=figure)
+                return graph_object
+            elif (len(node_ids) > 2) and (len(node_ids) <= max_n_spectra):
+                figures = generate_n_spectrum_plots(plot_spectra)
+                graph_object = [dcc.Graph(id=f"specplot{iloc}", figure=fig) for iloc, fig in enumerate(figures)]
+                return graph_object
+            else:
+                return f"Select Node(s) to show spectra (up to {max_n_spectra})"
+        else:
+            return f"Select Node(s) to show spectra (up to {max_n_spectra})"
     
     update_edges_local = partial(update_edges, edge_dict = edge_dict)
     @app.callback(
