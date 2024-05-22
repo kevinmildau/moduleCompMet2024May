@@ -5,7 +5,7 @@ IN DEVELOPMENT; NOT COMPLETE.
 This repository contains a small tutorial on mass spectral networking using GNPS and related tools.
 
 # Use in google colab
-To use the module in google colab, it should be downloaded from [*github*](https://github.com/kevinmildau/moduleCompMet2024May/blob/main/practical_may2024.ipynb), uploaded to you *gdrive*, and opened using *Google Colaboratory*. Run the google colab set-up code cell to install all dependencies.
+To use the module in google colab, it should be downloaded from [*github*](https://github.com/kevinmildau/moduleCompMet2024May/blob/main/practical_may2024.ipynb), uploaded to you *gdrive*, and opened using *Google Colaboratory*. Run the google colab set-up code cell to install all dependencies (beware of the interactive input!).
 
 # Local Set-up and Use:
 Clone the repo, and from the command line within the repo clone folder execute the following:
