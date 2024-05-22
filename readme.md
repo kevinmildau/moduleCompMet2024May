@@ -22,8 +22,3 @@ Command explanation:
 - activate the environment
 - install the downloaded moduleCompMet2024May package dependencies and functions for easy access
 - open the jupyter-notebook ecosystem in the browser
-
-
-# Useful commands
-
-To remove a folder with content from google colab run: !rm -rf <folder_name>
