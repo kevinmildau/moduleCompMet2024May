@@ -6,3 +6,4 @@ compMetabolomics.egg-info
 dev_archive
 
 models
+.DS_Store
