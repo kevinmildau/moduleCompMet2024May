@@ -48,13 +48,15 @@ def generate_cytoscape_node_entry(
     log2ratio: float,
     effect_direction : str,
     group_id : int, 
+    precursor_mz : float,
     coordinate_scaler : int = 1000 
     ) -> dict:
   """ Generates a single cytoscape node entry in required format. """
   output = {
     'data' : {
       'id': str(feature_id),
-      'label': str(feature_id), 
+      'precursor_mz': precursor_mz,
+      'label': str(feature_id) + "; " + str(round(precursor_mz, 6)), 
       'size' : node_size,
       'log2ratio' : str(log2ratio),
       'effect_direction' : effect_direction,
@@ -83,6 +85,7 @@ def generate_node_list(
         summary_statistics_df.at[iloc, "log2ratio"], 
         summary_statistics_df.at[iloc, "effect_direction"], 
         group_ids[iloc], 
+        spectrum.precursor_mz,
         coordinate_scaler
       )
     )
