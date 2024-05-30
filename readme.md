@@ -17,8 +17,4 @@ pip install .
 jupyter-notebook
 ```
 
-Command explanation:
-- set up conda environment with correct python version
-- activate the environment
-- install the downloaded moduleCompMet2024May package dependencies and functions for easy access
-- open the jupyter-notebook ecosystem in the browser
+These commands create 1) a new isolated python environment, 2) activate this environmeent, 3) clone the github repository, 4) move the active directory into the downloaded repository folder using the terminal, 5) install the compMetabolomics course modules, and 6) run a jupyter-notebook from within the conda environment. Set-up may differ when using google-colab or hosted jupyterlab environments. 
