@@ -111,8 +111,8 @@ def run_tsne_grid(
 def plot_tsne_grid(tsne_list : List[GridEntryTsne]) -> None:
   """ Plots pearson and spearman scores vs perplexity for each entry in list of GridEntryTsne objects. """
   
-  pearson_scores = [x.spearman_score for x in tsne_list]
-  spearman_scores = [x.pearson_score for x in tsne_list]
+  spearman_scores = [x.spearman_score for x in tsne_list]
+  pearson_scores  = [x.pearson_score for x in tsne_list]
   iloc_perplexity = [ f"{x.perplexity} / {iloc}" for iloc, x in enumerate(tsne_list)]
 
   trace_spearman = go.Scatter(x = iloc_perplexity, y = spearman_scores, name="spearman_score", mode = "markers")
