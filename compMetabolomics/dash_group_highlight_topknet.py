@@ -1,7 +1,6 @@
 import dash
 import dash_cytoscape as cyto
-from dash import html
-from dash import html, Input, Output, State, dcc
+from dash import html, Input, Output, State, dcc, ctx
 import copy
 from typing import List, Dict, Union
 import numpy as np
@@ -55,6 +54,14 @@ def create_group_highlight_entry(selected_group : Union[str, int]):
             }
         }
     return entry
+
+def generate_deamphasis_stylesheet(stylesheet : List[dict]):
+    """ Function takes stylesheet and sets opacity styles to 0.25 """
+    deamphasis_style = copy.deepcopy(stylesheet)
+    for elem in deamphasis_style:
+        elem["style"]["opacity"] = 0.25
+        elem["style"]["text-opacity"] = 0.25
+    return deamphasis_style
 
 def generate_edge_dict(edge_list: List[Dict]) -> Dict:
     """ 
@@ -117,6 +124,10 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
     # accessibility within the update_spectrum_plots callback
     _SPECTRA = copy.deepcopy(spectra) 
 
+    # Extract node identifiers and class identifiers to populate dropdown menus
+    node_identifiers = [node['data']['id'] for node in node_data]
+    class_identifiers = np.unique([node['classes'] for node in node_data]).tolist() 
+
     edge_dict = generate_edge_dict(edge_data)
     explainer_text = (
         "--> Hover over a node to highlight it's k-medoid cluster.\n"
@@ -148,6 +159,10 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
             ),
             dcc.Slider(min=1, max=max_k, step=1, value=5, id='top_k_slider'),
             html.Div(id='selected-node-ids', style={'whiteSpace': 'pre-wrap'}),
+            html.Div(children  = "Use dropdown to select node to highlight: "),
+            dcc.Dropdown(id = "node_dropdown_id", options=node_identifiers, value=None),
+            html.Div(children  = "Use dropdown to select class to highlight: "),
+            dcc.Dropdown(id = "class_dropdown_id", options=class_identifiers, value=None),
             html.Div(id='hover-group-text'),
             html.Div(id='spectrum-plots'),
             dcc.Store(id='default_stylesheet', data= copy.deepcopy(STYLESHEET)),
@@ -214,13 +229,65 @@ def run_network_visualization(node_data : List[Dict], edge_data : List[Dict], ma
         Output('cytoscape', 'stylesheet'),
         Output('hover-group-text', 'children'),
         Input('cytoscape', 'mouseoverNodeData'),
+        Input('node_dropdown_id', 'value'),
+        Input('class_dropdown_id', 'value'),
         State('default_stylesheet', 'data'),
+        prevent_initial_call=True,
     )
-    def provideNodeGroupHighlight(mouseoverNodeData, default_stylesheet):
-        if mouseoverNodeData:
-            highlight_group = create_group_highlight_entry(mouseoverNodeData["group"])
-            hover_group_text = f"The hover highlighted group is: {mouseoverNodeData['group']}"
-            return default_stylesheet + [highlight_group], hover_group_text
-        else:
-          return default_stylesheet, ""
+    def stylesheetCallbackHandlers(mouseoverNodeData, node_value, class_value, default_stylesheet):
+        # three types of input:
+        # a node value was selected
+        # a class value was selected
+        # a hover was triggered
+        trigger_component = ctx.triggered_id
+        if trigger_component == "node_dropdown_id" and node_value != None:
+            deamphasis_style = generate_deamphasis_stylesheet(default_stylesheet)
+            deamphasis_style.append({
+                "selector" : f"#{node_value}", 
+                "style": {
+                    "background-color": "pink",
+                    "opacity": 1,
+                    "text-opacity": 1,
+                    "width" : "300",
+                    "height" : "300",
+                }
+            })
+            return deamphasis_style, ""
+        if trigger_component == "class_dropdown_id" and class_value != None:
+            deamphasis_style = generate_deamphasis_stylesheet(default_stylesheet)
+            deamphasis_style.append({
+                "selector" : f".{class_value}", 
+                "style": {
+                    "background-color": "pink",
+                    "opacity": 1,
+                    "text-opacity": 1,
+                    "width" : "100",
+                    "height" : "100",
+                }
+            })
+            return deamphasis_style, ""
+
+            return deamphasis_style, ""
+        if trigger_component == "cytoscape":
+            if mouseoverNodeData is None:
+                return default_stylesheet, ""
+            else:
+                highlight_group = create_group_highlight_entry(mouseoverNodeData["group"])
+                hover_group_text = f"The hover highlighted group is: {mouseoverNodeData['group']}"
+                return default_stylesheet + [highlight_group], hover_group_text
+        # adding default output as catch
+        return default_stylesheet, ""
+    
+    @app.callback(
+        Output('node_dropdown_id', 'value'),
+        Output('class_dropdown_id', 'value'),
+        Input('cytoscape', 'mouseoverNodeData'),
+        Input('cytoscape', 'selectedNodeData'),
+        prevent_initial_call=True,
+    )
+    def resetDropdowns(_not_used_mouseoverNodeData, _not_used_selectedNodeData):
+        # function resets dropdown menus in case any click or hover callback is triggered
+        return None, None
+        
+    # NOT A CALLBACK RETURN, BUT APP RETURN
     return app
