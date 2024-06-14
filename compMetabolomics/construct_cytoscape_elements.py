@@ -90,3 +90,26 @@ def generate_node_list(
       )
     )
   return node_list
+
+def generate_node_list_no_stats(
+    spectra : List[Spectrum], 
+    coordinates_table : pd.DataFrame, 
+    group_ids : List[int],
+    coordinate_scaler : int = 100,
+    ) -> List[dict]:
+  node_list = []
+  for iloc, spectrum in enumerate(spectra):
+    node_list.append(
+      generate_cytoscape_node_entry(
+        spectrum.feature_id, 
+        coordinates_table.iloc[iloc]["x_coordinate"], 
+        coordinates_table.iloc[iloc]["y_coordinate"], 
+        25, 
+        "none", 
+        "none", 
+        group_ids[iloc], 
+        spectrum.precursor_mz,
+        coordinate_scaler
+      )
+    )
+  return node_list
