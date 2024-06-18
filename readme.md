@@ -3,7 +3,7 @@
 This repository contains two tutorials on mass spectral networking using GNPS and related tools. This practical is in active development and may be subject to changes.
 
 # Use in google colab
-To use the modules in google colab, it should be downloaded from [*github*](https://github.com/vdhooftcompmet/CompMet_Tutorials/blob/main/practical_may2024.ipynb) or from [*github*](https://github.com/vdhooftcompmet/CompMet_Tutorials/blob/main/practical_appendix_natural_products_library.ipynb), uploaded to your *gdrive*, and opened using *Google Colaboratory*. Run the google colab set-up code cell to install all dependencies (beware of the interactive input!).
+To use the modules in google colab, they should be downloaded from GitHub: the module on experimental data from [*github*](https://github.com/vdhooftcompmet/CompMet_Tutorials/blob/main/practical_may2024.ipynb), and the module using natural products standars from [*github*](https://github.com/vdhooftcompmet/CompMet_Tutorials/blob/main/practical_appendix_natural_products_library.ipynb), uploaded to your *gdrive*, and opened using *Google Colaboratory*. Run the google colab set-up code cell to install all dependencies (beware of the interactive input!).
 
 # Local Set-up and Use:
 Make sure to have conda, and git available on your machine and run the following commands to set-up the course module:
